@@ -34,7 +34,8 @@ var system = module.exports = function(info, conf) {
           var hasBrackets = info.hasBrackets;
 
           m = 'System.import(' + (hasBrackets ? '[' : '') + info.params.map(function(v) {
-            return lang.info.wrap(lang.jsAsync.wrap(v)) + lang.uri.wrap(v);
+            return lang.jsAsync.wrap(v);
+            //return lang.info.wrap(lang.jsAsync.wrap(v)) + lang.uri.wrap(v);
           }).join(',') + (hasBrackets ? ']' : '');
           break;
 
