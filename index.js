@@ -44,7 +44,7 @@ var entry = module.exports = function(fis, opts) {
 entry.defaultOptions = {
 
   // 用来查找无后缀资源的
-  extList: ['.js', '.coffee', '.jsx', '.es6'],
+  extList: ['.js', '.coffee', '.jsx', '.es6', '.ts', '.tsx'],
 
   // 设置包裹时，内容缩进的空格数。
   tab: 2
