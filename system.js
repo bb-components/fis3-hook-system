@@ -6,6 +6,20 @@ var rRequire = /"(?:[^\\"\r\n\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*'|(\/\/[
 var system = module.exports = function(info, conf) {
   var file = info.file;
   var shimed = conf.shim && conf.shim[file.subpath];
+  var ignoreDependencies = conf.ignoreDependencies;
+  var isIgnored = function(str) {
+    var found = false;
+
+    ignoreDependencies.every(function(item) {
+      if (item && item.exec && item.exec(str)) {
+        found = true;
+        return false;
+      }
+      return true;
+    });
+
+    return found;
+  };
 
   try {
     // 用户主动配置了 shim 那么说明目标文件一定是模块化 js
@@ -28,8 +42,12 @@ var system = module.exports = function(info, conf) {
           var info = parseParams(params);
 
           m = 'require.async([' + info.params.map(function(v) {
+            if (isIgnored('/' + v.value)) {
+              return r.raw;
+            }
+
             var type = lang.jsAsync;
-            return type.ld + v + type.rd;
+            return type.ld + v.raw + type.rd;
           }).join(',') + ']';
           break;
 
@@ -38,7 +56,11 @@ var system = module.exports = function(info, conf) {
           var hasBrackets = info.hasBrackets;
 
           m = 'System.import(' + (hasBrackets ? '[' : '') + info.params.map(function(v) {
-            return lang.jsAsync.wrap(v);
+            if (isIgnored('/' + v.value)) {
+              return r.raw;
+            }
+
+            return lang.jsAsync.wrap(v.raw);
             //return lang.info.wrap(lang.jsAsync.wrap(v)) + lang.uri.wrap(v);
           }).join(',') + (hasBrackets ? ']' : '');
           break;
@@ -48,8 +70,12 @@ var system = module.exports = function(info, conf) {
           var async = info.hasBrackets;
 
           m = 'require(' + (async ? '[' : '') + info.params.map(function(v) {
+            if (isIgnored('/' + v.value)) {
+              return v.raw;
+            }
+
             var type = lang[async ? 'jsAsync' : 'jsRequire'];
-            return type.ld + v + type.rd;
+            return type.ld + v.raw + type.rd;
           }).join(',') + (async ? ']' : '');
           break;
       }
@@ -69,7 +95,12 @@ function parseParams(value) {
     }
     return '';
   });
-  params = value.split(/\s*,\s*/);
+  params = value.split(/\s*,\s*/).map(function(item) {
+    return {
+      raw: item,
+      value: item.substring(1, item.length - 2)
+    };
+  });
 
   return {
     params: params,

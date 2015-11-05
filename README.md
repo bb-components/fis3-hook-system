@@ -88,7 +88,7 @@ fis.hook('system', {
     * `init` [可选] 暴露的可以通过自定的方法来控制。
     
       ```js
-      fis.hook('cmd', {
+      fis.hook('system', {
           shim: {
               'comp/2-0/2-0.js': {
                   deps: ['jquery'],
@@ -99,3 +99,12 @@ fis.hook('system', {
       ```
 * `extList` 默认为 `['.js', '.coffee', '.jsx', '.es6']`，当引用模块时没有指定后缀，该插件会尝试这些后缀。
 * `tab` 默认为 `2`, 用来设置包裹时，内容缩进的空格数。
+* `ignoreDependencies` 默认为空，当分析到某个文件的时候，此插件会把当前文件标记依赖目标文件。如果你希望部分文件不这么做，那么请设置此插件。
+
+  ```js
+  fis.hook('system', {
+      ignoreDependencies: [
+        'angular2/angular2'
+      ]
+  });
+  ```
