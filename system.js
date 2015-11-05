@@ -15,6 +15,10 @@ var system = module.exports = function(info, conf) {
     // I don't care.
   }
 
+  if (file.skipDepsAnalysis) {
+    return;
+  }
+
   var content = info.content;
 
   info.content = content.replace(rRequire, function(m, comment, type, params) {
