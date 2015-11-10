@@ -6,6 +6,7 @@ var entry = module.exports = function(fis, opts) {
   // amd 处理配置项。
   opts.forwardDeclaration = true;
   opts.skipBuiltinModules = false;
+  opts.allowOnymous = true;
 
   lookup.init(fis, opts);
 

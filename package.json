@@ -1,6 +1,6 @@
 {
   "name": "fis3-hook-system",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "fis3 system plugin",
   "main": "index.js",
   "scripts": {
