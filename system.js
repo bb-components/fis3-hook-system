@@ -1,6 +1,6 @@
 var amd = require('fis3-hook-amd/amd.js');
 var lang = fis.compile.lang;
-var rRequire = /"(?:[^\\"\r\n\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*'|(\/\/[^\r\n\f]+|\/\*[\s\S]+?(?:\*\/|$))|\b(require\.async|require|System\.import)\s*\(\s*("(?:[^\\"\r\n\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*'|\[[\s\S]*?\])\s*/g;
+var rRequire = /"(?:[^\\"\r\n\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*'|(\/\/[^\r\n\f]+|\/\*[\s\S]+?(?:\*\/|$))|\b(require[\s\r\n]*?\.async|require|System[\s\r\n]*?\.import)\s*\(\s*("(?:[^\\"\r\n\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*'|\[[\s\S]*?\])\s*/g;
 
 
 var system = module.exports = function(info, conf) {
@@ -37,17 +37,16 @@ var system = module.exports = function(info, conf) {
 
   info.content = content.replace(rRequire, function(m, comment, type, params) {
     if (type) {
-      switch (type) {
+      switch (type.replace(/[\s\r\n]+/g, '')) {
         case 'require.async':
           var info = parseParams(params);
 
-          m = 'require.async([' + info.params.map(function(v) {
+          m = type + '([' + info.params.map(function(v) {
             if (isIgnored('/' + v.value)) {
               return r.raw;
             }
 
-            var type = lang.jsAsync;
-            return type.ld + v.raw + type.rd;
+            return lang.jsAsync.wrap(v.raw);
           }).join(',') + ']';
           break;
 
@@ -55,7 +54,7 @@ var system = module.exports = function(info, conf) {
           var info = parseParams(params);
           var hasBrackets = info.hasBrackets;
 
-          m = 'System.import(' + (hasBrackets ? '[' : '') + info.params.map(function(v) {
+          m = type + '(' + (hasBrackets ? '[' : '') + info.params.map(function(v) {
             if (isIgnored('/' + v.value)) {
               return r.raw;
             }
@@ -74,8 +73,7 @@ var system = module.exports = function(info, conf) {
               return v.raw;
             }
 
-            var type = lang[async ? 'jsAsync' : 'jsRequire'];
-            return type.ld + v.raw + type.rd;
+            return lang[async ? 'jsAsync' : 'jsRequire'].wrap(v.raw);
           }).join(',') + (async ? ']' : '');
           break;
       }
