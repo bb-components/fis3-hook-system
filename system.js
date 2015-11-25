@@ -26,7 +26,7 @@ var system = module.exports = function(info, conf) {
     shimed && (file.isMod = true);
     file.isMod && amd.apply(amd, arguments);
   } catch(e) {
-    // I don't care.
+    fis.log.warn('[%s] %s', file.subpath, e.message);
   }
 
   if (file.skipDepsAnalysis) {
