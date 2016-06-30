@@ -1,8 +1,8 @@
-var lookup = require('fis3-hook-commonjs/lookup.js');
+var lookup = fis.require('hook-commonjs/lookup.js');
 var system = require('./system.js');
 // 程序入口
 var entry = module.exports = function(fis, opts) {
-  
+
   // amd 处理配置项。
   opts.forwardDeclaration = true;
   opts.skipBuiltinModules = false;

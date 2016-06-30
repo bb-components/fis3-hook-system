@@ -1,4 +1,4 @@
-var amd = require('fis3-hook-amd/amd.js');
+var amd = fis.require('hook-amd/amd.js');
 var lang = fis.compile.lang;
 var rRequire = /"(?:[^\\"\r\n\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*'|(\/\/[^\r\n\f]+|\/\*[\s\S]+?(?:\*\/|$))|\b(require[\s\r\n]*?\.async|require|System[\s\r\n]*?\.import)\s*\(\s*("(?:[^\\"\r\n\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*'|\[[\s\S]*?\])\s*/g;
 
